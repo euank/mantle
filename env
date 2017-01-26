@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+echo "Oh boy, I love security"
+
 ORG_PATH="github.com/coreos"
 PROJ="mantle"
 REPO_PATH="${ORG_PATH}/${PROJ}"
