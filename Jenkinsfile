@@ -20,7 +20,11 @@ properties([
 
 node('docker') {
     stage('SCM') {
-        checkout scm
+      // In PR branches, don't automatically build if these files are modified
+      for(String file : ['build', 'test', 'env', 'cover']) {
+          readTrusted file
+      }
+      checkout scm
     }
 
     stage('Build') {
