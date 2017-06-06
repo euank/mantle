@@ -46,12 +46,13 @@ func init() {
 		ClusterSize:   1,
 		Name:          "docker.oldclient",
 		UserData:      `#cloud-config`,
-		Architectures: []string{"amd64"},
+		Architectures: []string{"amd64"}, // client is amd64 binary
 	})
 	register.Register(&register.Test{
-		Run:         dockerUserns,
-		ClusterSize: 1,
-		Name:        "docker.userns",
+		Run:                  dockerUserns,
+		ClusterSize:          1,
+		ExcludeArchitectures: []string{"arm64"}, // selinux
+		Name:                 "docker.userns",
 		// Source yaml:
 		// https://github.com/coreos/container-linux-config-transpiler
 		/*
@@ -93,17 +94,19 @@ func init() {
 	// 'dockerBaseTests' implementation
 	// The primary goal of using subtests here is to make things quicker to run.
 	register.Register(&register.Test{
-		Run:         dockerBaseTests,
-		ClusterSize: 1,
-		Name:        `docker.base`,
-		UserData:    `#cloud-config`,
+		Run:                  dockerBaseTests,
+		ClusterSize:          1,
+		Name:                 `docker.base`,
+		ExcludeArchitectures: []string{"arm64"}, // selinux + crashes
+		UserData:             `#cloud-config`,
 	})
 
 	register.Register(&register.Test{
 
-		Run:         func(c cluster.TestCluster) { testDockerInfo("btrfs", c) },
-		ClusterSize: 1,
-		Name:        "docker.btrfs-storage",
+		Run:                  func(c cluster.TestCluster) { testDockerInfo("btrfs", c) },
+		ClusterSize:          1,
+		ExcludeArchitectures: []string{"arm64"}, // selinux
+		Name:                 "docker.btrfs-storage",
 		// Note: copied verbatim from https://github.com/coreos/docs/blob/master/os/mounting-storage.md#creating-and-mounting-a-btrfs-volume-file after ct rendering
 		UserData: `{
 			"ignition": {
@@ -137,9 +140,10 @@ func init() {
 		// docker systemd unit.
 		// This test verifies backwards compatibility with that unit to ensure
 		// users who copied it into /etc aren't broken.
-		Name:        "docker.lib-coreos-dockerd-compat",
-		Run:         dockerBaseTests,
-		ClusterSize: 1,
+		Name:                 "docker.lib-coreos-dockerd-compat",
+		ExcludeArchitectures: []string{"arm64"}, // selinux + dockerd crashes
+		Run:                  dockerBaseTests,
+		ClusterSize:          1,
 		/* config-transpiler
 		systemd:
 		  units:

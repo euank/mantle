@@ -21,10 +21,11 @@ import (
 
 func init() {
 	register.Register(&register.Test{
-		Run:         SelinuxEnforce,
-		ClusterSize: 1,
-		Name:        "coreos.selinux.enforce",
-		UserData:    `#cloud-config`,
+		Run:                  SelinuxEnforce,
+		ClusterSize:          1,
+		Name:                 "coreos.selinux.enforce",
+		ExcludeArchitectures: []string{"arm64"},
+		UserData:             `#cloud-config`,
 	})
 }
 
