@@ -145,6 +145,11 @@ func filterTests(tests map[string]*register.Test, pattern, platform string, vers
 				allowed = false
 			}
 		}
+		for _, a := range t.ExcludeArchitectures {
+			if a == arch {
+				allowed = false
+			}
+		}
 		if !allowed {
 			continue
 		}
