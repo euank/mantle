@@ -112,47 +112,12 @@ var (
 	}
 	awsPartitions = []awsPartitionSpec{
 		awsPartitionSpec{
-			Name:         "AWS",
-			Profile:      "default",
-			Bucket:       "coreos-prod-ami-import-us-west-2",
-			BucketRegion: "us-west-2",
-			LaunchPermissions: []string{
-				"477645798544", // coreosdev
-				"017021077683", // coreos-cl
-			},
-			Regions: []string{
-				"us-east-1",
-				"us-east-2",
-				"us-west-1",
-				"us-west-2",
-				"eu-west-1",
-				"eu-west-2",
-				"eu-central-1",
-				"ap-south-1",
-				"ap-southeast-1",
-				"ap-southeast-2",
-				"ap-northeast-1",
-				"ap-northeast-2",
-				"sa-east-1",
-				"ca-central-1",
-			},
-		},
-		awsPartitionSpec{
 			Name:         "AWS GovCloud",
 			Profile:      "govcloud",
 			Bucket:       "coreos-prod-ami-import-us-gov-west-1",
 			BucketRegion: "us-gov-west-1",
 			Regions: []string{
 				"us-gov-west-1",
-			},
-		},
-		awsPartitionSpec{
-			Name:         "AWS China",
-			Profile:      "china",
-			Bucket:       "coreos-prod-ami-import-cn-north-1",
-			BucketRegion: "cn-north-1",
-			Regions: []string{
-				"cn-north-1",
 			},
 		},
 	}
@@ -292,7 +257,7 @@ var (
 				BaseName:        "CoreOS",
 				BaseDescription: "CoreOS Container Linux",
 				Prefix:          "coreos_production_ami_",
-				Image:           "coreos_production_ami_vmdk_image.vmdk.bz2",
+				Image:           "coreos_production_ami_image.bin.bz2",
 				Partitions:      awsPartitions,
 			},
 		},
@@ -347,7 +312,7 @@ var (
 				BaseName:        "CoreOS",
 				BaseDescription: "CoreOS Container Linux",
 				Prefix:          "coreos_production_ami_",
-				Image:           "coreos_production_ami_vmdk_image.vmdk.bz2",
+				Image:           "coreos_production_ami_image.bin.bz2",
 				Partitions:      awsPartitions,
 			},
 		},
@@ -392,7 +357,7 @@ var (
 				BaseName:        "CoreOS",
 				BaseDescription: "CoreOS Container Linux",
 				Prefix:          "coreos_production_ami_",
-				Image:           "coreos_production_ami_vmdk_image.vmdk.bz2",
+				Image:           "coreos_production_ami_image.bin.bz2",
 				Partitions:      awsPartitions,
 			},
 		},
