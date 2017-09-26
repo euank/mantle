@@ -15,6 +15,7 @@
 package gcloud
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 
@@ -55,6 +56,10 @@ func (gm *machine) PasswordSSHClient(user string, password string) (*ssh.Client,
 
 func (gm *machine) SSH(cmd string) ([]byte, error) {
 	return gm.gc.SSH(gm, cmd)
+}
+
+func (gm *machine) SSHPipeOutput(cmd string, stdout io.Writer, stderr io.Writer) error {
+	return gm.gc.SSHPipeOutput(gm, cmd, stdout, stderr)
 }
 
 func (m *machine) Reboot() error {

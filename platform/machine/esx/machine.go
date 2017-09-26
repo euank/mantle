@@ -16,6 +16,7 @@ package esx
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -55,6 +56,10 @@ func (em *machine) PasswordSSHClient(user string, password string) (*ssh.Client,
 
 func (em *machine) SSH(cmd string) ([]byte, error) {
 	return em.cluster.SSH(em, cmd)
+}
+
+func (em *machine) SSHPipeOutput(cmd string, stdout io.Writer, stderr io.Writer) error {
+	return em.cluster.SSHPipeOutput(em, cmd, stdout, stderr)
 }
 
 func (m *machine) Reboot() error {

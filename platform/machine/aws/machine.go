@@ -15,6 +15,7 @@
 package aws
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 
@@ -54,6 +55,10 @@ func (am *machine) PasswordSSHClient(user string, password string) (*ssh.Client,
 
 func (am *machine) SSH(cmd string) ([]byte, error) {
 	return am.cluster.SSH(am, cmd)
+}
+
+func (am *machine) SSHPipeOutput(cmd string, stdout io.Writer, stderr io.Writer) error {
+	return am.cluster.SSHPipeOutput(am, cmd, stdout, stderr)
 }
 
 func (m *machine) Reboot() error {

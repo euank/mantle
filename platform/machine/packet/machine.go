@@ -15,6 +15,7 @@
 package packet
 
 import (
+	"io"
 	"strings"
 
 	"golang.org/x/crypto/ssh"
@@ -54,6 +55,10 @@ func (pm *machine) PasswordSSHClient(user string, password string) (*ssh.Client,
 
 func (pm *machine) SSH(cmd string) ([]byte, error) {
 	return pm.cluster.SSH(pm, cmd)
+}
+
+func (pm *machine) SSHPipeOutput(cmd string, stdout io.Writer, stderr io.Writer) error {
+	return pm.cluster.SSHPipeOutput(pm, cmd, stdout, stderr)
 }
 
 func (m *machine) Reboot() error {

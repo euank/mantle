@@ -17,6 +17,7 @@ package platform
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -94,25 +95,37 @@ func (bc *BaseCluster) PasswordSSHClient(ip string, user string, password string
 	return sshClient, nil
 }
 
+// SSH executes the given command, cmd, on the given Machine, m. It returns the
+// stdout of the command and an error.
+// The stderr of the command will be written directly to the calling program's
+// stderr (i.e. os.Stderr)
 func (bc *BaseCluster) SSH(m Machine, cmd string) ([]byte, error) {
+	var stdout bytes.Buffer
+	err := bc.SSHPipeOutput(m, cmd, &stdout, os.Stderr)
+	out := bytes.TrimSpace(stdout.Bytes())
+	return out, err
+}
+
+// SSHPipeOutput will run the given command, cmd, on the given Machine, m, and
+// pipe the stderr and stdout to the provided writers.
+func (bc *BaseCluster) SSHPipeOutput(m Machine, cmd string, stdout io.Writer, stderr io.Writer) error {
 	client, err := bc.SSHClient(m.IP())
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer client.Close()
 
 	session, err := client.NewSession()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer session.Close()
 
-	session.Stderr = os.Stderr
-	out, err := session.Output(cmd)
-	out = bytes.TrimSpace(out)
-	return out, err
+	session.Stdout = stdout
+	session.Stderr = stderr
+	return session.Run(cmd)
 }
 
 func (bc *BaseCluster) Machines() []Machine {

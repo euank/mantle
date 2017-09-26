@@ -15,6 +15,7 @@
 package qemu
 
 import (
+	"io"
 	"io/ioutil"
 
 	"golang.org/x/crypto/ssh"
@@ -56,6 +57,10 @@ func (m *machine) PasswordSSHClient(user string, password string) (*ssh.Client, 
 
 func (m *machine) SSH(cmd string) ([]byte, error) {
 	return m.qc.SSH(m, cmd)
+}
+
+func (m *machine) SSHPipeOutput(cmd string, stdout io.Writer, stderr io.Writer) error {
+	return m.qc.SSHPipeOutput(m, cmd, stdout, stderr)
 }
 
 func (m *machine) Reboot() error {
