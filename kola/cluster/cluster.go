@@ -15,8 +15,10 @@
 package cluster
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -89,4 +91,30 @@ func (t *TestCluster) DropFile(localPath string) error {
 		}
 	}
 	return nil
+}
+
+// SSH runs a ssh command on the given machine in the cluster. It differs from
+// Machine.SSH in that stderr is written to the test's output as a 'Log' line.
+// This ensures the output will be correctly accumulated under the correct
+// test.
+func (t *TestCluster) SSH(m platform.Machine, cmd string) ([]byte, error) {
+	var stdout bytes.Buffer
+	stderrRead, stderrWrite := io.Pipe()
+	stderrLogged := make(chan struct{})
+
+	go func() {
+		defer close(stderrLogged)
+
+		stderrLines := bufio.NewScanner(stderrRead)
+		for stderrLines.Scan() {
+			t.Log(stderrLines.Text())
+		}
+	}()
+
+	err := m.SSHPipeOutput(cmd, &stdout, stderrWrite)
+	out := bytes.TrimSpace(stdout.Bytes())
+	stderrWrite.Close()
+
+	<-stderrLogged
+	return out, err
 }
