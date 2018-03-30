@@ -82,15 +82,6 @@ func runRelease(cmd *cobra.Command, args []string) {
 		plog.Fatalf("File not found: %s", verurl)
 	}
 
-	// Register GCE image if needed.
-	doGCE(ctx, client, src, &spec)
-
-	// Make Azure images public.
-	doAzure(ctx, client, src, &spec)
-
-	// Make AWS images public.
-	doAWS(ctx, client, src, &spec)
-
 	for _, dSpec := range spec.Destinations {
 		dst, err := storage.NewBucket(client, dSpec.BaseURL)
 		if err != nil {
